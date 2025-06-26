@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.zoneWord.innerHTML = hangmanGame.getWordDisplay();
     // ==== Evénements ====
     // ---- Vérifier la lettre ----
-    elements.btnCheckLetter?.addEventListener("click", function () {
+    elements.btnCheckLetter.addEventListener("click", function () {
         const letter = elements.inputLetter.value;
         const result = hangmanGame.guessLetter(letter);
         const letterElement = document.createElement("span");

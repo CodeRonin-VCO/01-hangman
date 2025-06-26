@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ==== Evénements ====
     // ---- Vérifier la lettre ----
-    elements.btnCheckLetter?.addEventListener("click", function () {
+    elements.btnCheckLetter.addEventListener("click", function () {
         const letter = elements.inputLetter.value;
         const result = hangmanGame.guessLetter(letter);
 
