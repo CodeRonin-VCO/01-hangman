@@ -25,11 +25,15 @@
 		<div class="zone-word"></div>
 		<div class="zone-guess"></div>
 	</div>
-	<form action="#">
-		<label for="letter">Indiquez votre lettre:</label>
-		<input type="text" maxlength="1" id="letter">
-		<button class="btn-check">Valider</button>
-	</form>
+	<div class="container-form">
+		<form action="#">
+			<label for="letter">Indiquez votre lettre:</label>
+			<input type="text" maxlength="1" id="letter">
+			<button class="btn-check">Valider</button>
+			<button class="btn-reset">Rejouer</button>
+		</form>
+		<canvas class="zone-canvas" width="600" height="320"></canvas>
+	</div>
 	<div class="zone-chosen-letter"></div>
 </body>
 </html>

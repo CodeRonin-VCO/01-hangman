@@ -1,57 +1,194 @@
-// ==== Sélections ====
-const elements: Elements = {
-    zoneWord: document.querySelector(".zone-word"),
-    zoneGuess: document.querySelector(".zone-guess"),
-    inputLetter: document.querySelector("#letter"),
-    btnCheckLetter: document.querySelector(".btn-check"),
-    zoneChosenLetter: document.querySelector(".zone-chosen-letter")
-};
-// ---- Définition des types pour les éléments ----
-type Elements = {
-    zoneWord: HTMLElement | null;
-    zoneGuess: HTMLElement | null;
-    inputLetter: HTMLInputElement | null;
-    btnCheckLetter: HTMLElement | null;
-    zoneChosenLetter: HTMLElement | null;
-};
+document.addEventListener("DOMContentLoaded", () => {
+    // ==== Sélections ====
+    const elements = {
+        zoneWord: document.querySelector(".zone-word") as HTMLElement,
+        zoneGuess: document.querySelector(".zone-guess") as HTMLElement,
+        inputLetter: document.querySelector("#letter") as HTMLInputElement,
+        btnCheckLetter: document.querySelector(".btn-check") as HTMLButtonElement,
+        btnReplay: document.querySelector(".btn-reset") as HTMLButtonElement,
+        zoneChosenLetter: document.querySelector(".zone-chosen-letter") as HTMLElement,
+        zoneCanvas: document.querySelector(".zone-canvas") as HTMLCanvasElement,
+    };
 
-// ==== Variables ====
-const listWord: string[] = ["car", "jazz", "loin", "proche", "bruit", "voix", "noeud", "taupe", "animal", "menthe", "billard", "exemple", "drapeau", "paranoia", "symptome", "accordeon", "bouillotte", "labyrinthe", "abracadabra"];
-const listGuessedLetter: string[] = [];
+    // ==== Variables ====
+    const listWord: string[] = ["car", "jazz", "loin", "proche", "bruit", "voix", "noeud", "taupe", "animal", "menthe", "billard", "exemple", "drapeau", "paranoia", "symptome", "accordeon", "bouillotte", "labyrinthe", "abracadabra"];
 
-// ==== Class constructor ====
-class Hangman {
-    private wordToGuess: string;
-    private guessedLetters: string[];
-    private maxIncorrectGuesses: number;
-    private incorrectGuesses: number;
+    // ==== Dessin du pendu (IA) ====
+    // Obtenir le contexte de dessin du canvas
+    const canvasContext = elements.zoneCanvas.getContext('2d');
 
-    // listWord[Math.floor(Math.random()*listWord.length)];
-
-    constructor(wordToGuess: string, maxIncorrectGuesses: number = 9) {
-        this.wordToGuess           = wordToGuess.toLowerCase();
-        this.guessedLetters        = [];
-        this.maxIncorrectGuesses   = maxIncorrectGuesses;
-        this.incorrectGuesses      = 0
+    if (!canvasContext) {
+        throw new Error("Impossible de récupérer le contexte de dessin du canvas.");
     }
-    guessLetter(letter: string): boolean {
-        letter = letter.toLowerCase();
 
-        if (!this.wordToGuess.includes(letter)) {
-            this.incorrectGuesses++;
-            return false;
-        } else {
-            return true;
+    // ==== Class constructor ====
+    class Hangman {
+        private wordToGuess: string;
+        private guessedLetters: string[];
+        private maxIncorrectGuesses: number;
+        private incorrectGuesses: number;
+        private canvasContext: CanvasRenderingContext2D;
+
+        // listWord[Math.floor(Math.random()*listWord.length)];
+
+        constructor(wordToGuess: string, canvasContext: CanvasRenderingContext2D, maxIncorrectGuesses: number = 10) {
+            this.wordToGuess         = wordToGuess.toLowerCase();
+            this.guessedLetters      = [];
+            this.maxIncorrectGuesses = maxIncorrectGuesses;
+            this.incorrectGuesses    = 0;
+            this.canvasContext       = canvasContext;
+            this.clearCanvas();
+        };
+        guessLetter(letter: string): boolean {
+            letter = letter.toLowerCase();
+
+            if (!this.wordToGuess.includes(letter)) {
+                this.incorrectGuesses++;
+                this.drawHangman(); // Dessiner le pendu
+                return false;
+            } else {
+                if(!this.guessedLetters.includes(letter)) {
+                    this.guessedLetters.push(letter);
+                }
+                return true;
+            };
+        };
+        isGameLost(): boolean {
+            return this.incorrectGuesses >= this.maxIncorrectGuesses;
+        };
+        getWordDisplay(): string {
+            return this.wordToGuess.split("").map(letter => this.guessedLetters.includes(letter) ? letter : "_ ").join("");
+        };
+        isGameWon(): boolean {
+            return this.wordToGuess.split("").every(letter => this.guessedLetters.includes(letter));
+        };
+        clearCanvas(): void {
+            this.canvasContext.clearRect(0, 0, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
+        }
+        drawHangman(): void {
+            const ctx = this.canvasContext;
+        
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+        
+            switch (this.incorrectGuesses) {
+                case 1: // Base
+                    ctx.beginPath();
+                    ctx.moveTo(50, 300);
+                    ctx.lineTo(250, 300);
+                    ctx.stroke();
+                    break;
+                case 2: // Pilier vertical
+                    ctx.beginPath();
+                    ctx.moveTo(100, 300);
+                    ctx.lineTo(100, 50);
+                    ctx.stroke();
+                    break;
+                case 3: // Poutre horizontale
+                    ctx.beginPath();
+                    ctx.moveTo(100, 50);
+                    ctx.lineTo(200, 50);
+                    ctx.stroke();
+                    break;
+                case 4: // Corde
+                    ctx.beginPath();
+                    ctx.moveTo(200, 50);
+                    ctx.lineTo(200, 80);
+                    ctx.stroke();
+                    break;
+                case 5: // Tête
+                    ctx.beginPath();
+                    ctx.arc(200, 100, 20, 0, Math.PI * 2);
+                    ctx.stroke();
+                    break;
+                case 6: // Corps
+                    ctx.beginPath();
+                    ctx.moveTo(200, 120);
+                    ctx.lineTo(200, 200);
+                    ctx.stroke();
+                    break;
+                case 7: // Bras gauche
+                    ctx.beginPath();
+                    ctx.moveTo(200, 140);
+                    ctx.lineTo(170, 180);
+                    ctx.stroke();
+                    break;
+                case 8: // Bras droit
+                    ctx.beginPath();
+                    ctx.moveTo(200, 140);
+                    ctx.lineTo(230, 180);
+                    ctx.stroke();
+                    break;
+                case 9: // Jambe gauche
+                    ctx.beginPath();
+                    ctx.moveTo(200, 200);
+                    ctx.lineTo(170, 250);
+                    ctx.stroke();
+                    break
+                case 10:
+                    // Jambe droite
+                    ctx.beginPath();
+                    ctx.moveTo(200, 200);
+                    ctx.lineTo(230, 250);
+                    ctx.stroke();
+                    break;
+            }
         }
     }
-    isGameLost(): boolean {
-        return this.incorrectGuesses >= this.maxIncorrectGuesses;
-    }
-    getWordDisplay(): string {
-        return this.wordToGuess.split("").map(letter => this.guessedLetters.includes(letter) ? letter : "_").join("");
-    }
-}
 
-// Exemple d'utilisation
-const wordToGuess = listWord[Math.floor(Math.random() * listWord.length)];
-const hangmanGame = new Hangman(wordToGuess);
+    // ==== Application ====
+    const wordToGuess = listWord[Math.floor(Math.random() * listWord.length)];
+    let hangmanGame = new Hangman(wordToGuess, canvasContext);
+
+    elements.zoneWord.innerHTML = hangmanGame.getWordDisplay();
+
+
+    // ==== Evénements ====
+    // ---- Vérifier la lettre ----
+    elements.btnCheckLetter?.addEventListener("click", function () {
+        const letter = elements.inputLetter.value;
+        const result = hangmanGame.guessLetter(letter);
+
+        const letterElement = document.createElement("span");
+        letterElement.textContent = letter + ", ";
+        letterElement.style.color = result ? "green" : "red";
+        elements.zoneChosenLetter.append(letterElement);
+
+        elements.zoneWord.innerHTML = hangmanGame.getWordDisplay();
+        
+        if(hangmanGame.isGameLost()) {
+            const elementMessage = document.createElement("span");
+            elementMessage.style.color = "red";
+            elementMessage.textContent = `Vous avez perdu la partie.`;
+            elements.zoneGuess.append(elementMessage);
+
+            elements.btnCheckLetter.setAttribute("disabled", "true");
+        }
+        if(hangmanGame.isGameWon()) {
+            const elementMessage = document.createElement("span");
+            elementMessage.style.color = "green";
+            elementMessage.textContent = `Vous avez gagné la partie.`;
+            elements.zoneGuess.append(elementMessage);
+
+            elements.btnCheckLetter.setAttribute("disabled", "true");
+        }
+
+        elements.inputLetter.value = "";
+        elements.inputLetter.focus();
+    });
+    // ---- Rejouer ----
+    elements.btnReplay.addEventListener("click", function () {
+        const wordToGuess = listWord[Math.floor(Math.random() * listWord.length)];
+        hangmanGame = new Hangman(wordToGuess, canvasContext);
+
+        elements.zoneWord.innerHTML = hangmanGame.getWordDisplay();
+        elements.inputLetter.value = "";
+        elements.zoneGuess.innerHTML = "";
+        elements.zoneChosenLetter.innerHTML = "";
+        elements.btnCheckLetter.removeAttribute("disabled");
+        elements.inputLetter.focus();
+
+        // Effacer le canvas
+        canvasContext.clearRect(0, 0, elements.zoneCanvas.width, elements.zoneCanvas.height);
+    })
+});

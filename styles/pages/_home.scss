@@ -18,32 +18,41 @@ h1 {
     }
 }
 
-form {
+.container-form {
     width: 80%;
     margin: auto;
-    padding: 5rem;
     display: flex;
-    flex-direction: column;
-    align-items: center;
 
-    label, input, button {
-        width: 20%;
-        margin: 1rem 0;
-        padding: .5rem;
-        border-radius: .8rem;
-    }
-    input, button {
-        border: .1rem solid $main-dark;
-    }
-    button {
-        background-color: $red-light;
-
-        &:hover {
-            color: $white-medium;
-            background-color: $red-medium;
+    form {
+        width: 50%;
+        margin: auto;
+        padding: 5rem;
+        display: flex;
+        flex-direction: column;
+    
+        label, input, button {
+            margin: 1rem 0;
+            padding: .5rem;
+            border-radius: .8rem;
+        }
+        input, button {
+            border: .1rem solid $main-dark;
+        }
+        button {
+            background-color: $red-light;
+    
+            &:hover {
+                color: $white-medium;
+                background-color: $red-medium;
+            }
         }
     }
+    .zone-canvas {
+        width: 50%;
+    }
 }
+
+
 .zone-chosen-letter {
     width: 80%;
     margin: 1rem auto;
