@@ -1,0 +1,22 @@
+{
+  "name": "01-hangman",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeRonin-VCO/08-aurelien.git"
+  },
+  "author": "CodeRonin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodeRonin-VCO/08-aurelien/issues"
+  },
+  "homepage": "https://github.com/CodeRonin-VCO/08-aurelien#readme",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
